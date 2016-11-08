@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="8dp"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.liddack.carrinhoarduino.MainActivity"
+    android:background="@color/colorBackground"
+    android:orientation="vertical"
+    android:baselineAligned="false">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ProgressBar
+            style="@style/Widget.AppCompat.ProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/spinner"
+            android:indeterminate="true"
+            android:visibility="visible"/>
+
+        <TextView
+            android:id="@+id/conectado_a_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="10dp"
+            android:layout_marginLeft="8dp"
+            android:text="Desconectado"
+            android:textSize="16sp"
+            android:textColor="@android:color/black" />
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/controle_view">
+        <View
+            android:id="@+id/vao_view"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true" />
+
+        <ImageButton
+            android:layout_height="85dp"
+            android:layout_width="85dp"
+            android:id="@+id/re_controle_btn"
+            android:src="@drawable/setabaixo"
+            android:layout_below="@+id/vao_view"
+            android:scaleType="centerInside"
+            android:layout_centerHorizontal="true"
+            style="@style/Widget.AppCompat.Button.Borderless" />
+
+
+        <ImageButton
+            android:id="@+id/frente_controle_btn"
+            android:src="@drawable/setacima"
+            android:layout_width="85dp"
+            android:layout_height="85dp"
+            android:layout_above="@+id/vao_view"
+            android:scaleType="centerInside"
+            android:layout_centerHorizontal="true"
+            style="@style/Widget.AppCompat.Button.Borderless"/>
+
+        <ImageButton
+            android:id="@+id/esq_controle_btn"
+            android:src="@drawable/setaesquerda"
+            android:layout_width="85dp"
+            android:layout_height="85dp"
+            android:scaleType="centerInside"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/vao_view"
+            style="@style/Base.Widget.AppCompat.Button.Borderless" />
+
+        <ImageButton
+            android:id="@+id/dir_controle_btn"
+            android:src="@drawable/setadireita"
+            android:layout_width="85dp"
+            android:layout_height="85dp"
+            android:scaleType="centerInside"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_alignTop="@+id/esq_controle_btn"
+            android:layout_toRightOf="@+id/vao_view"
+            android:layout_toEndOf="@+id/vao_view" />
+
+    </RelativeLayout>
+
+</LinearLayout>
