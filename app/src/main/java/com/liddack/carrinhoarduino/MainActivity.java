@@ -239,7 +239,7 @@ public class MainActivity extends AppCompatActivity {
                 int antes = intent.getIntExtra(BluetoothAdapter.EXTRA_PREVIOUS_STATE, BluetoothAdapter.ERROR);
                 int agora = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR);
                 if (antes == BluetoothAdapter.STATE_ON && agora == BluetoothAdapter.STATE_TURNING_OFF) {
-                    connection.cancel();
+                    if (connection != null) connection.cancel();
                     CONECTADO = false;
                     BT_DESLIGADO = true;
                     displayAlertDialog(6);
@@ -437,8 +437,10 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        /* Linha obrigatória */
         super.onDestroy();
-        connection.cancel();
+        // Cancela a thread de conexão, se houver alguma
+        if (connection != null) connection.cancel();
         // Remove o filtro de descoberta de dispositivos do registro
         unregisterReceiver(receiver);
         // Desliga o Bluetooth
