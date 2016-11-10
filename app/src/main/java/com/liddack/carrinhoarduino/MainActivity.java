@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Definindo constantes para intents e conexões Bluetooth
     public static int ENABLE_BLUETOOTH = 1;
-    private static String ENDERECO_CARRINHO = "E0:76:D0:CF:8D:D1"; // 20:15:05:19:11:36
+    private static String ENDERECO_CARRINHO = "5C:C9:D3:4E:4D:FD"; // Carrinho: 20:15:05:19:11:36; Payleven: E0:76:D0:CF:8D:D1
     private static String PIN_CARRINHO = "502682"; // 1234
     private static byte[] PIN_CARRINHO_BYTES = PIN_CARRINHO.getBytes();
 
@@ -247,7 +247,7 @@ public class MainActivity extends AppCompatActivity {
                     BT_DESLIGADO = false;
                 }
             } else if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)) {
-                connection.cancel();
+                if (connection != null) connection.cancel();
                 CONECTADO = false;
                 if (!BT_DESLIGADO) displayAlertDialog(5);
                 displayState("Carrinho desconectado");
