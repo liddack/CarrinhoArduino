@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingTop="12dp"
+    android:paddingLeft="24dp"
+    android:paddingRight="24dp"
+    android:paddingBottom="8dp">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:background="@mipmap/ic_launcher"
+        android:id="@+id/launcher_icon"
+        android:layout_marginBottom="4dp"
+        android:contentDescription="Ícone do app" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/app_name"
+        android:layout_gravity="center_horizontal"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title"
+        android:layout_marginTop="4dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView"
+        android:layout_gravity="center_horizontal"
+        android:text="v 0.08"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="App criado para controlar um carrinho com Arduino, sem fio, através da tecnologia Bluetooth.\nResultado de um trabalho interdisciplinar feito no Centro Universitário Luterano de Santarém (Ceuls/ULBRA)."
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textAlignment="center" />
+
+    <Button
+        android:text="Criado por Lucas Miranda"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView2"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:textAllCaps="false"
+        android:layout_gravity="center_horizontal"
+        android:onClick="linkAutor"
+        android:padding="10dp"
+        android:minHeight="14dp"
+        android:textColor="?android:attr/textColorSecondary" />
+
+</LinearLayout>

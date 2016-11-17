@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
@@ -15,9 +16,13 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
     static ProgressBar spinner;
     static TextView connectedLabel;
+    static ImageView statusIcon;
     ImageButton btnFrente;
     ImageButton btnRe;
     ImageButton btnDireita;
@@ -45,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Definindo constantes para intents e conexões Bluetooth
     public static int ENABLE_BLUETOOTH = 1;
-    private static String ENDERECO_CARRINHO = "5C:C9:D3:4E:4D:FD"; // Carrinho: 20:15:05:19:11:36; Payleven: E0:76:D0:CF:8D:D1
+    private static String ENDERECO_CARRINHO = "E0:76:D0:CF:8D:D1"; // Carrinho: 20:15:05:19:11:36; Payleven: E0:76:D0:CF:8D:D1
     private static String PIN_CARRINHO = "502682"; // 1234
     private static byte[] PIN_CARRINHO_BYTES = PIN_CARRINHO.getBytes();
 
@@ -76,7 +82,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        connectedLabel = (TextView) findViewById(R.id.conectado_a_label);
 
         /**
          * Definindo os botões de controle do carrinho
@@ -88,6 +93,10 @@ public class MainActivity extends AppCompatActivity {
 
         // Definindo instâncias de views
         spinner = (ProgressBar) findViewById(R.id.spinner);
+        connectedLabel = (TextView) findViewById(R.id.conectado_a_label);
+        statusIcon = (ImageView) findViewById(R.id.status_icon);
+
+        // Criando uma  instância do motor de vibração do aparelho
         viber = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
         // Registrando receptor de transmissões (BroadcastReceiver) de ações de Bluetooth
@@ -111,6 +120,9 @@ public class MainActivity extends AppCompatActivity {
             public void onVariableChanged() {
                 if (FALHA_CONEXAO) {
                     FALHA_CONEXAO = false;
+                    spinner.setVisibility(View.GONE);
+                    statusIcon.setImageResource(R.drawable.ic_error);
+                    statusIcon.setVisibility(View.VISIBLE);
                     displayAlertDialog(4);
                 }
             }
@@ -123,6 +135,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                    if (!CONECTADO) showToast("Carrinho não conectado");
                     viber.vibrate(tempoVibracao);
                 } //else if (motionEvent.getAction() == MotionEvent.ACTION_UP)
                 return false;
@@ -138,6 +151,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                     viber.vibrate(tempoVibracao);
+                    if (!CONECTADO) showToast("Carrinho não conectado");
                 } //else if (motionEvent.getAction() == MotionEvent.ACTION_UP)
                 return false;
             }
@@ -151,6 +165,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                    if (!CONECTADO) showToast("Carrinho não conectado");
                     viber.vibrate(tempoVibracao);
                 } //else if (motionEvent.getAction() == MotionEvent.ACTION_UP)
                 return false;
@@ -165,6 +180,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                    if (!CONECTADO) showToast("Carrinho não conectado");
                     viber.vibrate(tempoVibracao);
                 } //else if (motionEvent.getAction() == MotionEvent.ACTION_UP)
                 return false;
@@ -174,6 +190,27 @@ public class MainActivity extends AppCompatActivity {
         // Solicita a ativação do Bluetooth
         pedidoBluetooth();
     }
+
+    // Inflando (exibindo) o menu na ActionBar
+    @Override
+    public boolean onCreateOptionsMenu(android.view.Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_about:
+                telaSobre();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
 
     // Recebe o resultado da busca por dispositivos visíveis
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -206,6 +243,9 @@ public class MainActivity extends AppCompatActivity {
                     //else parearAoCarrinho();
                 } else {    // Se o carrinho não for encontrado
                     displayState("Carrinho não encontrado :(");
+                    spinner.setVisibility(View.GONE);
+                    statusIcon.setImageResource(R.drawable.ic_bluetooth_disabled);
+                    statusIcon.setVisibility(View.VISIBLE);
                     displayAlertDialog(1);  // Exibe um diálogo de alerta de origem 1
                 }
                 // Verifica se o dispositivo requisita um pin
@@ -256,6 +296,7 @@ public class MainActivity extends AppCompatActivity {
     };
 
     public void pedidoBluetooth () {
+        statusIcon.setVisibility(View.GONE);
         spinner.setVisibility(View.VISIBLE);
         // Verifica se o aparelho suporta bluetooth
         if (meuBluetooth == null) showToast("Seu dispositivo não suporta Bluetooth.");
@@ -274,18 +315,21 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void conectarAoCarrinho() {
-        spinner.setVisibility(View.VISIBLE);
-        // Verifica se o carrinho está pareado
-        if (!carrinhoTaPareado()) {
-            meuBluetooth.startDiscovery();  // Manda o adaptador pesquisar dispositivos visíveis.
-                                            // O resultado é recebido pelo BroadcastReceiver
-        } else {
-            carrinho = meuBluetooth.getRemoteDevice(ENDERECO_CARRINHO);
-            // Se conecta ao carrinho
-            String uuid = carrinho.getUuids()[0].toString();
-            displayState("Conectando-se ao carrinho...");
-            connection = new ConnectionThread(ENDERECO_CARRINHO, uuid);
-            connection.startThread();
+        if (!CONECTADO) {
+            statusIcon.setVisibility(View.GONE);
+            spinner.setVisibility(View.VISIBLE);
+            // Verifica se o carrinho está pareado
+            if (!carrinhoTaPareado()) {
+                meuBluetooth.startDiscovery();  // Manda o adaptador pesquisar dispositivos visíveis.
+                // O resultado é recebido pelo BroadcastReceiver
+            } else {
+                carrinho = meuBluetooth.getRemoteDevice(ENDERECO_CARRINHO);
+                // Se conecta ao carrinho
+                String uuid = carrinho.getUuids()[0].toString();
+                displayState("Conectando-se ao carrinho...");
+                connection = new ConnectionThread(ENDERECO_CARRINHO, uuid);
+                connection.startThread();
+            }
         }
     }
 
@@ -435,6 +479,29 @@ public class MainActivity extends AppCompatActivity {
         alerta.show();
     }
 
+    // Mostra a tela de Sobre do app
+    public void telaSobre() {
+        final AlertDialog modal;
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        // Get the layout inflater
+        LayoutInflater inflater = getLayoutInflater();
+        builder.setView(inflater.inflate(R.layout.about_dialog, null));
+        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+            }
+        });
+        modal = builder.create();
+        modal.show();
+    }
+
+    // Abre o navegador na página do Github do autor
+    public void linkAutor(View view) {
+        Log.d("About", "Autor clicado");
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.github.com/liddack"));
+        startActivity(browserIntent);
+    }
+
     @Override
     protected void onDestroy() {
         /* Linha obrigatória */
@@ -464,6 +531,8 @@ public class MainActivity extends AppCompatActivity {
             else if(dataString.equals("---S")) {
                 spinner.setVisibility(View.GONE);
                 CONECTADO = true;
+                statusIcon.setImageResource(R.drawable.ic_done);
+                statusIcon.setVisibility(View.VISIBLE);
                 connectedLabel.setText("Carrinho pronto");
             }
 
