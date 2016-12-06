@@ -63,7 +63,8 @@ public class ConnectionThread extends Thread {
                 Permanece em estado de espera até que a conexão seja
                 estabelecida.
             */
-            if (btSocket != null) btSocket.connect();
+
+            if (btSocket != null && !btSocket.isConnected()) btSocket.connect();
             Log.e("Conexão", "Conectado!");
         } catch (IOException e) {
             /*  Caso ocorra alguma exceção, exibe o stack trace para debug.
