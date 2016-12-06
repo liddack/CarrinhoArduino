@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.R.attr.action;
+import static android.R.attr.dial;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -60,17 +61,31 @@ public class MainActivity extends AppCompatActivity {
 
     private ConnectionThread connection;
 
-    private static List<FalhaConexaoListener> listeners = new ArrayList<FalhaConexaoListener>();
-    public static void setFalhaConexao(boolean value) {
-        FALHA_CONEXAO = value;
+    private static List<FalhaConexaoListener> falhaListeners = new ArrayList<FalhaConexaoListener>();
+    private static List<EstadoConexaoListener> connectListeners = new ArrayList<EstadoConexaoListener>();
 
-        for (FalhaConexaoListener l : listeners) {
+    public static void setEstadoConexao (boolean value) {
+        CONECTADO = value;
+
+        for (EstadoConexaoListener l : connectListeners) {
             l.onVariableChanged();
         }
     }
 
-    public static void addBooleanListener(FalhaConexaoListener l) {
-        listeners.add(l);
+    public static void setFalhaConexao(boolean value) {
+        FALHA_CONEXAO = value;
+
+        for (FalhaConexaoListener l : falhaListeners) {
+            l.onVariableChanged();
+        }
+    }
+
+    public static void addBooleanConnectListener(EstadoConexaoListener l) {
+        connectListeners.add(l);
+    }
+
+    public static void addBooleanFalhaListener(FalhaConexaoListener l) {
+        falhaListeners.add(l);
     }
 
     // Configura um objeto para o vibrador do aparelho
@@ -115,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        addBooleanListener(new FalhaConexaoListener() {
+        addBooleanFalhaListener(new FalhaConexaoListener() {
             @Override
             public void onVariableChanged() {
                 if (FALHA_CONEXAO) {
@@ -124,6 +139,14 @@ public class MainActivity extends AppCompatActivity {
                     statusIcon.setImageResource(R.drawable.ic_error);
                     statusIcon.setVisibility(View.VISIBLE);
                     displayAlertDialog(4);
+                }
+            }
+        });
+        addBooleanConnectListener(new EstadoConexaoListener() {
+            @Override
+            public void onVariableChanged() {
+                if (CONECTADO) {
+                    alerta.dismiss();
                 }
             }
         });
@@ -188,7 +211,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Solicita a ativação do Bluetooth
-        pedidoBluetooth();
+        if (!meuBluetooth.isEnabled()) pedidoBluetooth();
     }
 
     // Inflando (exibindo) o menu na ActionBar
@@ -503,6 +526,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        if (connection != null) connection.cancel();
+        CONECTADO = false;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        conectarAoCarrinho();
+    }
+
+    @Override
     protected void onDestroy() {
         /* Linha obrigatória */
         super.onDestroy();
@@ -530,7 +566,7 @@ public class MainActivity extends AppCompatActivity {
             }
             else if(dataString.equals("---S")) {
                 spinner.setVisibility(View.GONE);
-                CONECTADO = true;
+                setEstadoConexao(true);
                 statusIcon.setImageResource(R.drawable.ic_done);
                 statusIcon.setVisibility(View.VISIBLE);
                 connectedLabel.setText("Carrinho pronto");
