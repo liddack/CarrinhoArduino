@@ -159,8 +159,11 @@ public class MainActivity extends AppCompatActivity {
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                     if (!CONECTADO) showToast("Carrinho não conectado");
+                    else connection.write("w".getBytes());
                     viber.vibrate(tempoVibracao);
-                } //else if (motionEvent.getAction() == MotionEvent.ACTION_UP)
+                } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                    if (CONECTADO) connection.write("nw".getBytes());
+                }
                 return false;
             }
         });
@@ -175,7 +178,10 @@ public class MainActivity extends AppCompatActivity {
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                     viber.vibrate(tempoVibracao);
                     if (!CONECTADO) showToast("Carrinho não conectado");
-                } //else if (motionEvent.getAction() == MotionEvent.ACTION_UP)
+                    else connection.write("s".getBytes());
+                } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                    if (CONECTADO) connection.write("ns".getBytes());
+                }
                 return false;
             }
         });
@@ -189,8 +195,11 @@ public class MainActivity extends AppCompatActivity {
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                     if (!CONECTADO) showToast("Carrinho não conectado");
+                    else connection.write("a".getBytes());
                     viber.vibrate(tempoVibracao);
-                } //else if (motionEvent.getAction() == MotionEvent.ACTION_UP)
+                } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                    if (CONECTADO) connection.write("na".getBytes());
+                }
                 return false;
             }
         });
@@ -204,8 +213,11 @@ public class MainActivity extends AppCompatActivity {
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                     if (!CONECTADO) showToast("Carrinho não conectado");
+                    else connection.write("d".getBytes());
                     viber.vibrate(tempoVibracao);
-                } //else if (motionEvent.getAction() == MotionEvent.ACTION_UP)
+                } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                    if (CONECTADO) connection.write("nd".getBytes());
+                }
                 return false;
             }
         });
